@@ -1,44 +1,41 @@
   <template>
     <div class="container">
-    <v-for>
         <div>
             <h2 style="text-transform: uppercase;">Torunament name{}</h2>
             <b-list-group>
                 <b-list-group-item button>
-                    <div @click='getMatches(29)' v-b-toggle="'collapse-1'">Toggle Collapse</div>
+                    <div @click='getMatches()' v-b-toggle="'collapse-1'">
+                        <b-container class="bv-example-row">
+                            <b-row>
+                                <b-col>Tournament name</b-col>
+                            </b-row>
+                        </b-container>
+                    </div>
                     <b-icon v-if="loaded" icon="asterisk" animation="spin" font-scale="2"></b-icon>
-                        <v-for>
-                            <b-collapse id="collapse-1" class="mt-2" style="border-top: 2px solid black; background-color: #585858; margin: 0; padding: 10px; color: white;">
-                                <b-container class="bv-example-row">
-                                    <b-row class="text-center">
-                                        <b-col><h4>Home team</h4></b-col>
-                                        <b-col><h4>Away team</h4></b-col>
-                                    </b-row>
-                                    <hr style="border: 1px solid white;">
-                                    <b-row class="text-center">
-                                        <b-col>Home score</b-col>
-                                        <b-col>-</b-col>
-                                        <b-col>Away score</b-col>
-                                    </b-row>
-                                    <hr style="border: 1px solid white;">
-                                    <p>Date 2020.20.20</p>
-                                    <p>Comment</p>
-                                </b-container>
+                            <b-collapse id="collapse-1" class="mt-2">
+                                <div v-for="match in matches" v-bind:key="match.id" 
+                                style="border-top: 2px solid black; background-color: #585858; 
+                                margin-bottom: 10px; padding: 10px; color: white;">
+                                    <b-container class="bv-example-row">
+                                        <b-row class="text-center">
+                                            <b-col><h4>{{match.home_team}}</h4></b-col>
+                                            <b-col><h4>{{match.away_team}}</h4></b-col>
+                                        </b-row>
+                                        <hr style="border: 1px solid white;">
+                                        <b-row class="text-center">
+                                            <b-col>{{match.home_score}}</b-col>
+                                            <b-col>-</b-col>
+                                            <b-col>{{match.away_score}}</b-col>
+                                        </b-row>
+                                        <hr style="border: 1px solid white;">
+                                        <p>{{match.date}} {{match.time}}</p>
+                                        <p>{{match.comment}}</p>
+                                    </b-container>
+                                </div>
                             </b-collapse>
-                            <b-collapse id="collapse-1" class="mt-2" style="border-top: 2px solid black; background-color: #585858; margin: 0; padding: 10px; color: white;">
-                            Match datas
-                            </b-collapse>
-                        </v-for>
-                </b-list-group-item>
-                                <b-list-group-item button>
-                    <div  v-b-toggle="'collapse-2'">Toggle Collapse</div>
-                        <b-collapse id="collapse-2" class="mt-2">
-                        Match datas
-                        </b-collapse>
                 </b-list-group-item>
             </b-list-group>
         </div>
-    </v-for>
     </div>
 </template>
 
@@ -55,7 +52,7 @@ export default {
         }
     },
     mounted() {
-        this.getTorunaments('https://cp.fn.sportradar.com/common/en/Etc:UTC/gismo/config_tournaments/1/17');
+        this.getTorunaments('http://localhost:8888/tournaments');
     },
     methods: {
         getTorunaments: function(url) {
@@ -63,10 +60,10 @@ export default {
                 this.torunaments = response
             })
         },
-        getMatches: function(id) {
+        getMatches: function() {
                 this.loaded = true
-            Vue.axios.get('https://cp.fn.sportradar.com/common/en/Etc:UTC/gismo/'+id+'/29/2021').then((response) => {
-                this.matches = response
+            Vue.axios.get('http://localhost:8888/matches').then((response) => {
+                this.matches = response.data.matches
                 this.loaded = false
             })
         }
