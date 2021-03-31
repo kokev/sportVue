@@ -4,7 +4,7 @@
             <h2 style="text-transform: uppercase;">{{key}}</h2>
             <b-list-group>
                 <b-list-group-item button v-for="tournament in value" v-bind:key="'tournament-'+tournament.id">
-                    <div @click='getMatches()' v-b-toggle="'collapse-'+tournament.id">
+                    <div @click='getMatches(tournament)' v-b-toggle="'collapse-'+tournament.id">
                         <b-container class="bv-example-row">
                             <b-row>
                                 <b-col>{{tournament.name}}</b-col>
@@ -13,7 +13,7 @@
                     </div>
                     
                     <div class="text-center">
-                        <b-icon v-if="loading" icon="asterisk" animation="spin" font-scale="2"></b-icon>
+                        <b-icon v-if="loading && processId == tournament.id" icon="asterisk" animation="spin" font-scale="2"></b-icon>
                     </div>
                     <b-collapse :id="'collapse-'+tournament.id" class="mt-2">
                         <div v-if="!loading">
@@ -53,7 +53,8 @@ export default {
         return {
             tournaments: null,
             matches: null,
-            loading: null
+            loading: null,
+            processId: null
         }
     },
     mounted() {
@@ -66,7 +67,9 @@ export default {
                 console.log(this.tournaments)
             })
         },
-        getMatches: function() {
+        getMatches: function(item) {
+            console.log(item)
+            this.processId = item.id
                 this.loading = true
             Vue.axios.get('http://localhost:8888/matches').then((response) => {
                 this.matches = response.data.matches
